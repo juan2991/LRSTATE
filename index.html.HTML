@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea de Tiempo - Libertad Religiosa Facatativá</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #ffffff 0%, #ffeded 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 25px 0;
+            background: linear-gradient(to right, #cc0000, #ff4444);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .escudo {
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .escudo img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+        }
+        
+        .header-content {
+            flex: 1;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(204, 0, 0, 0.1);
+            border-left: 5px solid #cc0000;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            border-color: #cc0000;
+        }
+        
+        .year-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .year-filter select {
+            padding: 12px 15px;
+            border: 1px solid #cc0000;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+            color: #cc0000;
+        }
+        
+        .timeline-container {
+            position: relative;
+            margin: 40px 0;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #cc0000;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 10px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            animation: fadeIn 0.5s forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: white;
+            border: 4px solid #cc0000;
+            border-radius: 50%;
+            top: 15px;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(odd)::after {
+            right: -13px;
+        }
+        
+        .timeline-item:nth-child(even)::after {
+            left: -13px;
+        }
+        
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border-left: 5px solid #cc0000;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(204, 0, 0, 0.2);
+            background-color: #fff5f5;
+        }
+        
+        .date {
+            font-weight: bold;
+            color: #cc0000;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .event {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .organizer {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background: #ffe6e6;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #cc0000;
+            border: 1px solid #ffcccc;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.1);
+            text-align: center;
+            border-top: 5px solid #cc0000;
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #cc0000;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #cc0000;
+        }
+        
+        .stat-card p {
+            color: #666;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-top: 5px solid #cc0000;
+        }
+        
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #cc0000;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: white;
+            background: linear-gradient(to right, #cc0000, #ff4444);
+            border-radius: 10px;
+            box-shadow: 0 -4px 15px rgba(204, 0, 0, 0.1);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .timeline-item:nth-child(odd)::after,
+            .timeline-item:nth-child(even)::after {
+                left: 18px;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .escudo {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="escudo">
+                <!-- Escudo de Facatativá (imagen representativa) -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#cc0000" stroke="white" stroke-width="2"/>
+                    <text x="50" y="50" text-anchor="middle" fill="white" font-size="14" dy=".3em">F</text>
+                </svg>
+            </div>
+            <div class="header-content">
+                <h1>Línea de Tiempo - Libertad Religiosa</h1>
+                <p class="subtitle">Municipio de Facatativá, Cundinamarca | 2017 - 2025</p>
+            </div>
+        </header>
+        
+        <div class="filters">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar evento, organización o palabra clave...">
+            </div>
+            <div class="year-filter">
+                <label for="yearSelect">Filtrar por año:</label>
+                <select id="yearSelect">
+                    <option value="all">Todos los años</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <i class="fas fa-calendar-day"></i>
+                <h3>24</h3>
+                <p>Eventos Registrados</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-building"></i>
+                <h3>6</h3>
+                <p>Organizaciones Involucradas</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-landmark"></i>
+                <h3>62</h3>
+                <p>Entidades Religiosas Georreferenciadas</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>9</h3>
+                <p>Años de Progreso</p>
+            </div>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline" id="timeline">
+                <!-- Los eventos se insertarán aquí mediante JavaScript -->
+            </div>
+        </div>
+        
+        <div id="eventModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDate" class="date"></p>
+                <p id="modalOrganizer" class="organizer"></p>
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">Facatativá</div>
+                <p>Enlace de Libertad Religiosa de Facatativá</p>
+                <p>© 2025 - Todos los derechos reservados</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Datos de la línea de tiempo
+        const timelineData = [
+            {
+                date: "11-07-2017",
+                event: "Instalación Primera Mesa Departamental del Diálogo Interreligioso",
+                organizer: "SEC Gobierno Cundinamarca",
+                tags: ["Institucional", "Diálogo"]
+            },
+            {
+                date: "25-08-2017",
+                event: "Reunión de articulación y adquisición de compromisos entre secretaría de Gobierno y Dirección de derechos humanos",
+                organizer: "SEC Gobierno Cundinamarca/Secretaría de Gobierno Facatativá",
+                tags: ["Articulación", "Compromisos"]
+            },
+            {
+                date: "24-11-2017",
+                event: "Creación del 'Comité de Libertad Religiosa' por Acuerdo 013 de 2017",
+                organizer: "Concejo Municipal de Facatativá",
+                tags: ["Legal", "Comité"]
+            },
+            {
+                date: "Marzo, Abril, Mayo 2018",
+                event: "Validación de Personería jurídica de las Congregaciones Religiosas de Facatativá",
+                organizer: "Enlace de Libertad Religiosa",
+                tags: ["Validación", "Base de Datos"]
+            },
+            {
+                date: "02-04-2018",
+                event: "Primera Reunión preparatoria del Comité de Libertad Religiosa entre Alcaldía y representantes de las ER",
+                organizer: "Secretaría de Gobierno de Facatativá",
+                tags: ["Reunión", "Preparatoria"]
+            },
+            {
+                date: "4-05-2018",
+                event: "Reunión Comité municipal de libertad religiosa entre Secretaría de Gobierno y los representantes de las ER",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Reunión", "Comité"]
+            },
+            {
+                date: "31-05-2018",
+                event: "Reunión del Comité municipal de libertad religiosa para la creación y adopción del reglamento interno",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Reglamento", "Estructura"]
+            },
+            {
+                date: "20-06-2018",
+                event: "Promulgación presidencial del Día Nacional de la Libertad religiosa",
+                organizer: "Dirección de Convivencia, Justicia y Derechos Humanos Gob. Cundinamarca",
+                tags: ["Nacional", "Celebración"]
+            },
+            {
+                date: "1-09-2018",
+                event: "Primer foro de Libertad Religiosa 'Política pública de libertad religiosa'",
+                organizer: "Alcaldía Municipal de Facatativá",
+                tags: ["Foro", "Política Pública"]
+            },
+            {
+                date: "09-11-2018",
+                event: "Reunión Comité municipal de libertad religiosa entre Secretaría de Gobierno y los representantes de las ER",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Reunión", "Seguimiento"]
+            },
+            {
+                date: "11-12-2018",
+                event: "Reunión Comité municipal de libertad religiosa entre Secretaría de Gobierno y los representantes de las ER",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Reunión", "Seguimiento"]
+            },
+            {
+                date: "7-5-2019",
+                event: "Reunión del Comité municipal de libertad religiosa. Socialización política Pública de Libertad Religiosa",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Socialización", "Política Pública"]
+            },
+            {
+                date: "21-05-2019",
+                event: "Elección y posesión 'comité departamental de Libertad religiosa de cultos y de conciencia de Cundinamarca'",
+                organizer: "SEC Gobierno Cundinamarca/Representante Comité Municipal LR Facatativá",
+                tags: ["Departamental", "Elección"]
+            },
+            {
+                date: "29-05-2019",
+                event: "Presentación acuerdo de Política Pública de Libertad Religiosa a la Alcaldía y Secretaría Jurídica para su aprobación",
+                organizer: "Representante Comité Municipal LR Facatativá/Alcalde Municipal de Facatativá",
+                tags: ["Aprobación", "Política Pública"]
+            },
+            {
+                date: "15-07-2019",
+                event: "Presentación Informe de Gestión del Comité de LR ante el Concejo Municipal",
+                organizer: "Concejo Municipal/Secretaría de Gobierno Municipal",
+                tags: ["Informe", "Rendición de Cuentas"]
+            },
+            {
+                date: "23-08-2019",
+                event: "Reunión de caracterización del Sector Religioso en el marco de la Política Pública de LR nacional",
+                organizer: "Secretaría de Gobierno Municipal",
+                tags: ["Caracterización", "Planificación"]
+            },
+            {
+                date: "27-09-2019",
+                event: "Adopción de la Política pública Municipal Integral de Libertad Religiosa, de cultos, conciencia y organizaciones basadas en la fe 2019-2030",
+                organizer: "Alcaldía Municipal/Concejo Municipal",
+                tags: ["Adopción", "Política Pública"]
+            },
+            {
+                date: "Septiembre, Octubre y Noviembre 2019",
+                event: "Validación y certificación de Personería jurídica de las Congregaciones Religiosas de Facatativá",
+                organizer: "Enlace de Libertad Religiosa",
+                tags: ["Certificación", "Base de Datos"]
+            },
+            {
+                date: "27-09-2019",
+                event: "Socialización de la Política pública Municipal Integral de Libertad Religiosa a los actores de las diferentes iglesias del municipio",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Socialización", "Divulgación"]
+            },
+            {
+                date: "28-02-2020",
+                event: "Reunión del Comité municipal de libertad religiosa. Socialización política Pública de Libertad Religiosa",
+                organizer: "Secretaría de Gobierno/Comité Municipal LR Facatativá",
+                tags: ["Reunión", "Socialización"]
+            },
+            {
+                date: "21-08-2020",
+                event: "Reunión virtual con los líderes religiosos para conocer protocolos de reapertura y bioseguridad en iglesias",
+                organizer: "Comité de LR Municipal, Secretaría de Salud",
+                tags: ["Pandemia", "Protocolos"]
+            },
+            {
+                date: "13-10-2020",
+                event: "Capacitación para la formulación de herramientas de implementación y seguimiento de la PPLR",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Capacitación", "Herramientas"]
+            },
+            {
+                date: "Septiembre 2020",
+                event: "Caracterización avanzada de las ER y congregaciones del Municipio",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Caracterización", "Diagnóstico"]
+            },
+            {
+                date: "15-10-2020",
+                event: "Reunión del Comité municipal de libertad religiosa. Ruta de la Política pública de LR y su plan de acción",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Plan de Acción", "Ruta"]
+            },
+            {
+                date: "16-10-2020",
+                event: "Reunión Comité municipal de libertad religiosa. Entrega de informe de Gestión en LR en el municipio",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Informe", "Rendición de Cuentas"]
+            },
+            {
+                date: "2021",
+                event: "Reunión del Comité municipal de libertad religiosa. Ruta de la Política pública de LR y su plan de acción",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Plan de Acción", "Seguimiento"]
+            },
+            {
+                date: "2021",
+                event: "Avance en reapertura periódica de templos religiosos",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Pandemia", "Reapertura"]
+            },
+            {
+                date: "2022",
+                event: "Avance en la implementación del plan de acción de la Política pública de LR",
+                organizer: "Secretaría de Gobierno",
+                tags: ["Implementación", "Progreso"]
+            },
+            {
+                date: "2024",
+                event: "Participación de líderes del sector religioso en la conmemoración de la Semana por la paz",
+                organizer: "Comité de Libertad Religiosa",
+                tags: ["Paz", "Participación"]
+            },
+            {
+                date: "2024",
+                event: "Evento público en el teatro municipal para la Celebración del día Nacional de la LR",
+                organizer: "Enlace LR/Comité de Libertad Religiosa",
+                tags: ["Celebración", "Visibilización"]
+            },
+            {
+                date: "2024",
+                event: "Participación en el Consejo de Paz por parte de los actores del Comité de LR",
+                organizer: "Enlace LR",
+                tags: ["Paz", "Participación"]
+            },
+            {
+                date: "2024",
+                event: "Diseño de cartilla online para la divulgación y reconocimiento de la LR en la población",
+                organizer: "Enlace LR",
+                tags: ["Divulgación", "Material Educativo"]
+            },
+            {
+                date: "2024",
+                event: "Georreferenciación de 62 entidades religiosas del Municipio",
+                organizer: "Enlace LR",
+                tags: ["Georreferenciación", "Base de Datos"]
+            },
+            {
+                date: "2025",
+                event: "Actualización del plan Financiero de la Política Pública de LR",
+                organizer: "Enlace LR",
+                tags: ["Financiación", "Planificación"]
+            },
+            {
+                date: "2025",
+                event: "Avance en la encuesta de caracterización a las entidades religiosas",
+                organizer: "Enlace LR",
+                tags: ["Caracterización", "Diagnóstico"]
+            }
+        ];
+
+        // Función para renderizar la línea de tiempo
+        function renderTimeline(data) {
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '';
+            
+            data.forEach((item, index) => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                timelineItem.style.animationDelay = `${index * 0.1}s`;
+                
+                // Extraer el año para usar en el filtrado
+                const year = item.date.slice(-4);
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-content" data-year="${year}">
+                        <div class="date">${item.date}</div>
+                        <div class="event">${item.event}</div>
+                        <div class="organizer">${item.organizer}</div>
+                        <div class="tags">
+                            ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                timeline.appendChild(timelineItem);
+            });
+            
+            // Añadir event listeners a los elementos de la línea de tiempo
+            document.querySelectorAll('.timeline-content').forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    openModal(data[index]);
+                });
+            });
+        }
+        
+        // Función para abrir el modal con los detalles del evento
+        function openModal(eventData) {
+            const modal = document.getElementById('eventModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDate = document.getElementById('modalDate');
+            const modalOrganizer = document.getElementById('modalOrganizer');
+            const modalDescription = document.getElementById('modalDescription');
+            
+            modalTitle.textContent = eventData.event;
+            modalDate.textContent = `Fecha: ${eventData.date}`;
+            modalOrganizer.textContent = `Organiza: ${eventData.organizer}`;
+            modalDescription.textContent = `Evento relacionado con: ${eventData.tags.join(', ')}`;
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Función para filtrar la línea de tiempo
+        function filterTimeline() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const selectedYear = document.getElementById('yearSelect').value;
+            
+            const filteredData = timelineData.filter(item => {
+                const matchesSearch = item.event.toLowerCase().includes(searchText) || 
+                                     item.organizer.toLowerCase().includes(searchText) ||
+                                     item.tags.some(tag => tag.toLowerCase().includes(searchText));
+                
+                const itemYear = item.date.slice(-4);
+                const matchesYear = selectedYear === 'all' || itemYear === selectedYear;
+                
+                return matchesSearch && matchesYear;
+            });
+            
+            renderTimeline(filteredData);
+        }
+        
+        // Inicializar la línea de tiempo
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTimeline(timelineData);
+            
+            // Configurar event listeners para los filtros
+            document.getElementById('searchInput').addEventListener('input', filterTimeline);
+            document.getElementById('yearSelect').addEventListener('change', filterTimeline);
+            
+            // Cerrar el modal
+            document.querySelector('.close').addEventListener('click', () => {
+                document.getElementById('eventModal').style.display = 'none';
+            });
+            
+            // Cerrar el modal al hacer clic fuera de él
+            window.addEventListener('click', (event) => {
+                if (event.target === document.getElementById('eventModal')) {
+                    document.getElementById('eventModal').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
